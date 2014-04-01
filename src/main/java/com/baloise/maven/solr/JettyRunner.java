@@ -7,7 +7,6 @@ import java.io.InputStreamReader;
 
 import org.apache.solr.client.solrj.embedded.JettySolrRunner;
 import org.apache.solr.client.solrj.embedded.PermissiveJettySolrRunner;
-import org.codehaus.plexus.util.FileUtils;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 public class JettyRunner {
@@ -37,6 +36,7 @@ public class JettyRunner {
     webapp.setContextPath(context);
     webapp.setWar(solrWar);
     webapp.setExtractWAR(false);
+    webapp.addServlet(ShutDownServlet.class.getName(), "/shutdown");
     jettySolr.getServer().setHandler(webapp);
     jettySolr.start();
     waitForExit();
