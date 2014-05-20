@@ -11,23 +11,6 @@ import org.eclipse.jetty.webapp.WebAppContext;
 
 public class JettyRunner {
 
-  public static void main(String[] args) throws Exception {
-    
-    int port = 8983;
-    File solrHome = new File("C:\\Users\\Public\\dev\\ws\\gwt\\solr-some\\src\\solr\\resources");
-    System.out.println(solrHome);
-    String context = "/solr";
-    String solrWar = "C:\\Users\\Public\\dev\\Maven\\repository\\org\\apache\\solr\\solr\\4.7.0\\solr-4.7.0.war";
-    runJetty(solrHome, context, port, solrWar);
-  }
-
-  /**
-   * @param solrHome
-   * @param context
-   * @param port
-   * @param war
-   * @throws Exception
-   */
   public static void runJetty(File solrHome, String context, int port, String solrWar) throws Exception {
     PermissiveJettySolrRunner jettySolr = new PermissiveJettySolrRunner(solrHome.getAbsolutePath(), context, port);
     addShutdownHook(jettySolr);
