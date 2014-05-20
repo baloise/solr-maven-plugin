@@ -40,4 +40,9 @@ Once you have updated all the versions and ensured that your build passes withou
 Stage to central
 
 > mvn nexus-staging:release
+via maven is not working for me
+via web gui
+https://oss.sonatype.org/#stagingRepositories
+see
+http://central.sonatype.org/pages/releasing-the-deployment.html#locate-and-examine-your-staging-repository
   
