@@ -18,7 +18,7 @@ public class JettyRunner {
     WebAppContext webapp = new WebAppContext();
     webapp.setContextPath(context);
     webapp.setWar(solrWar);
-    webapp.setExtractWAR(false);
+    webapp.setExtractWAR(true);
     webapp.addServlet(ShutDownServlet.class.getName(), "/shutdown");
     jettySolr.getServer().setHandler(webapp);
     jettySolr.start();
