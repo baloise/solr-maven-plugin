@@ -1,8 +1,10 @@
 package com.baloise.maven.solr;
 
 import static com.baloise.maven.solr.JettyRunner.runJetty;
+import static java.lang.String.format;
 
 import java.io.File;
+import java.net.UnknownHostException;
 import java.util.List;
 
 import org.apache.maven.plugin.AbstractMojo;
@@ -39,6 +41,15 @@ public class RunMojo extends AbstractMojo {
   @Component
   private PluginDescriptor plugin;
   
+  private String getHostName() {
+    try {
+      return java.net.InetAddress.getLocalHost().getHostName();
+    }
+    catch (UnknownHostException e) {
+      return "127.0.0.1";
+    }
+  }
+  
   public void execute() throws MojoExecutionException {
       if(war == null) war = getSolrWarLocation().getAbsolutePath();
       if(context.charAt(0) != '/') context = "/"+context;
@@ -46,6 +57,7 @@ public class RunMojo extends AbstractMojo {
       getLog().info("solr.port: "+port);
       getLog().info("solr.context: "+context);
       getLog().info("solr.war: "+war);
+      getLog().info(format("Starting SOLR server at http://%s:%s%s", getHostName(), port, context));
       try {
         runJetty(home, context, port, war);
       }
