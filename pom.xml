@@ -2,6 +2,12 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
+	<prerequisites>
+		<!-- Maven 3.1.0 is the earliest version using Eclipse Aether, Maven 3.0.x 
+			uses the incompatible predecessor Sonatype Aether -->
+		<maven>3.1</maven>
+	</prerequisites>
+
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
 		<artifactId>oss-parent</artifactId>
@@ -39,10 +45,23 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<solr.version>4.7.0</solr.version>
+		<solr.version>4.8.1</solr.version>
+		<aether.version>1.0.0.v20140518</aether.version>
 	</properties>
 
 	<dependencies>
+		<dependency>
+			<!-- required in all cases -->
+			<groupId>org.eclipse.aether</groupId>
+			<artifactId>aether-api</artifactId>
+			<version>${aether.version}</version>
+		</dependency>
+		<dependency>
+			<!-- optional helpers, might be superfluous depending on your use case -->
+			<groupId>org.eclipse.aether</groupId>
+			<artifactId>aether-util</artifactId>
+			<version>${aether.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-plugin-api</artifactId>

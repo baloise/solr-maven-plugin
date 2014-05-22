@@ -9,83 +9,109 @@ import java.util.List;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.settings.Settings;
-import org.codehaus.plexus.component.repository.ComponentDependency;
+import org.eclipse.aether.RepositorySystem;
+import org.eclipse.aether.RepositorySystemSession;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.DefaultArtifact;
+import org.eclipse.aether.repository.RemoteRepository;
+import org.eclipse.aether.resolution.ArtifactRequest;
+import org.eclipse.aether.resolution.ArtifactResolutionException;
+import org.eclipse.aether.resolution.ArtifactResult;
 
 @Mojo(name = "run", defaultPhase = LifecyclePhase.NONE)
 public class RunMojo extends AbstractMojo {
- 
+
   static final String SOLR_GROUP_ID = "org.apache.solr";
   static final String SOLR_ARTIFACT_ID = "solr";
 
   @Parameter(defaultValue = "${basedir}/src/solr/resources", property = "solr.home", required = true)
   private File home;
-  
+
   @Parameter(defaultValue = "8983", property = "solr.port", required = true)
   int port;
 
   @Parameter(defaultValue = "/solr", property = "solr.context", required = true)
   String context;
-  
+
   @Parameter(property = "solr.war", required = false)
   String war = null;
+  
+  @Parameter(defaultValue = "4.8.1", property = "solr.version", required = false)
+  String version = null;
 
   @Component
   private Settings settings;
-  
+
   @Component
   private PluginDescriptor plugin;
-  
+
+  @Component
+  private RepositorySystem repoSystem;
+
+  @Parameter(defaultValue = "${repositorySystemSession}")
+  private RepositorySystemSession repoSession;
+
+  @Parameter(defaultValue = "${project.remoteProjectRepositories}")
+  private List<RemoteRepository> projectRepos;
+
   private String getHostName() {
     try {
       return java.net.InetAddress.getLocalHost().getHostName();
     }
     catch (UnknownHostException e) {
-      return "127.0.0.1";
+      return "localhost";
     }
-  }
-  
-  public void execute() throws MojoExecutionException {
-      if(war == null) war = getSolrWarLocation().getAbsolutePath();
-      if(context.charAt(0) != '/') context = "/"+context;
-      getLog().info("solr.home: "+home.getAbsolutePath());
-      getLog().info("solr.port: "+port);
-      getLog().info("solr.context: "+context);
-      getLog().info("solr.war: "+war);
-      getLog().info(format("Starting SOLR server at http://%s:%s%s", getHostName(), port, context));
-      try {
-        runJetty(home, context, port, war);
-      }
-      catch (Exception e) {
-       getLog().error(e);
-      }
-    }
-
-  File getSolrWarLocation() {
-    File repo = new File(settings.getLocalRepository());
-    List<ComponentDependency> dependencies = plugin.getDependencies();
-    for (ComponentDependency dependency : dependencies) {
-      if(SOLR_GROUP_ID.equals(dependency.getGroupId()) && SOLR_ARTIFACT_ID.equals(dependency.getArtifactId())) {
-        return new File(repo, makePath(dependency));
-      }
-    }
-    return null;
   }
 
-  String makePath(ComponentDependency dependency) {
-    return String.format("%s/%s/%s/%s-%s.%s", 
-        dependency.getGroupId().replace(".", "/"),
-        dependency.getArtifactId(),
-        dependency.getVersion(),
-        dependency.getArtifactId(),
-        dependency.getVersion(),
-        dependency.getType()
-        );
+  public void execute() throws MojoExecutionException, MojoFailureException {
+    if (context.charAt(0) != '/') context = "/" + context;
+    getLog().info("solr.home: " + home.getAbsolutePath());
+    getLog().info("solr.port: " + port);
+    getLog().info("solr.context: " + context);
+    getLog().info("solr.version: " + version);
+    if (war == null) war =  resolve(SOLR_GROUP_ID+":"+SOLR_ARTIFACT_ID+":war:"+version).getArtifact().getFile().getAbsolutePath();
+    getLog().info("solr.war: " + war);
+    getLog().info(format("Starting SOLR server at http://%s:%s%s", getHostName(), port, context));
+    try {
+      runJetty(home, context, port, war);
+    }
+    catch (Exception e) {
+      getLog().error(e);
+    }
   }
-  
+
+  public ArtifactResult resolve(String artifactCoords) throws MojoExecutionException, MojoFailureException {
+    Artifact artifact;
+    try {
+      artifact = new DefaultArtifact(artifactCoords);
+    }
+    catch (IllegalArgumentException e) {
+      throw new MojoFailureException(e.getMessage(), e);
+    }
+
+    ArtifactRequest request = new ArtifactRequest();
+    request.setArtifact(artifact);
+    request.setRepositories(projectRepos);
+
+    getLog().info("Resolving artifact " + artifact + " from " + projectRepos);
+
+    ArtifactResult result;
+    try {
+      result = repoSystem.resolveArtifact(repoSession, request);
+    }
+    catch (ArtifactResolutionException e) {
+      throw new MojoExecutionException(e.getMessage(), e);
+    }
+
+    getLog().info("Resolved artifact " + artifact + " to " + result.getArtifact().getFile() + " from " + result.getRepository());
+    return result;
+  }
+
 }
