@@ -17,7 +17,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.settings.Settings;
 import org.codehaus.plexus.component.repository.ComponentDependency;
 
-@Mojo(name = "run", defaultPhase = LifecyclePhase.PROCESS_SOURCES)
+@Mojo(name = "run", defaultPhase = LifecyclePhase.NONE)
 public class RunMojo extends AbstractMojo {
  
   static final String SOLR_GROUP_ID = "org.apache.solr";
