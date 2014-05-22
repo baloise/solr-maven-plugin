@@ -1,7 +1,6 @@
 package com.baloise.maven.solr;
 
 import java.io.IOException;
-import java.util.Timer;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
