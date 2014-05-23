@@ -25,15 +25,19 @@ import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
 
-@Mojo(name = "run", defaultPhase = LifecyclePhase.NONE)
+
+@Mojo(name = "run", defaultPhase = LifecyclePhase.NONE, requiresProject=false)
 public class RunMojo extends AbstractMojo {
 
   static final String SOLR_GROUP_ID = "org.apache.solr";
   static final String SOLR_ARTIFACT_ID = "solr";
 
-  @Parameter(defaultValue = "${basedir}/src/solr/resources", property = "solr.home", required = true)
-  private File home;
+  @Parameter(defaultValue = "${basedir}")
+  private File private__basedir;
 
+  @Parameter(property = "solr.home")
+  private File home;
+  
   @Parameter(defaultValue = "8983", property = "solr.port", required = true)
   int port;
 
@@ -61,16 +65,8 @@ public class RunMojo extends AbstractMojo {
   @Parameter(defaultValue = "${project.remoteProjectRepositories}")
   private List<RemoteRepository> projectRepos;
 
-  private String getHostName() {
-    try {
-      return java.net.InetAddress.getLocalHost().getHostName();
-    }
-    catch (UnknownHostException e) {
-      return "localhost";
-    }
-  }
-
   public void execute() throws MojoExecutionException, MojoFailureException {
+    adjustHome();
     if (context.charAt(0) != '/') context = "/" + context;
     getLog().info("solr.home: " + home.getAbsolutePath());
     getLog().info("solr.port: " + port);
@@ -85,6 +81,25 @@ public class RunMojo extends AbstractMojo {
     catch (Exception e) {
       getLog().error(e);
     }
+  }
+
+  private void adjustHome() {
+    if(home == null) {
+      home = hasPom() ?  new File(private__basedir, "/src/solr/resources") : private__basedir;
+    }
+  }
+
+  private String getHostName() {
+    try {
+      return java.net.InetAddress.getLocalHost().getHostName();
+    }
+    catch (UnknownHostException e) {
+      return "localhost";
+    }
+  }
+  
+  private boolean hasPom() {
+    return new File("pom.xml").exists();
   }
 
   public ArtifactResult resolve(String artifactCoords) throws MojoExecutionException, MojoFailureException {
