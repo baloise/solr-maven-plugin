@@ -46,3 +46,4 @@ https://oss.sonatype.org/#stagingRepositories
 see
 http://central.sonatype.org/pages/releasing-the-deployment.html#locate-and-examine-your-staging-repository
   
+Maven central entry: https://repo1.maven.org/maven2/com/baloise/maven/solr-maven-plugin/
