@@ -47,7 +47,7 @@ public class RunMojo extends AbstractMojo {
   @Parameter(property = "solr.war", required = false)
   String war = null;
   
-  @Parameter(defaultValue = "4.8.1", property = "solr.version", required = false)
+  @Parameter(defaultValue = "4.10.1", property = "solr.version", required = false)
   String version = null;
 
   @Component
@@ -69,6 +69,8 @@ public class RunMojo extends AbstractMojo {
     adjustHome();
     if (context.charAt(0) != '/') context = "/" + context;
     getLog().info("solr.home: " + home.getAbsolutePath());
+    //TODO solr.home has to contain either solr.xml or collection1 core
+    //TODO otherwise generate solr.xml on classpath or handle error gracefully
     getLog().info("solr.port: " + port);
     getLog().info("solr.context: " + context);
     getLog().info("solr.version: " + version);
