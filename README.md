@@ -1,5 +1,4 @@
-solr-maven-plugin
-=================
+# solr-maven-plugin
 
 A maven plugin to help develop and deploy SOLR based applications.
 
@@ -10,21 +9,48 @@ The design goals are
  
 It is planned to support deploy life cycle too (create, update, delete, migrate cores on production servers).
 
-Quick start
------------
+## Quick start
 
-Prerequisites
-- Maven installed
-- a solr core to play with
+Prerequisite
+- Maven is working. That's all. No pom.xml required.
 
+lets go some where safe ...
 
-> mvn -DinteractiveMode=false -DarchetypeCatalog=http://sourcesense.github.com/solr-packager/archetype-catalog.xml -DarchetypeGroupId=com.sourcesense.solr -DarchetypeArtifactId=solr-standalone-archetype -DgroupId=com.example -DartifactId=solrTest -Dversion=0.0.1-SNAPSHOT archetype:generate
+`> mkdir /tmp/solr-test; cd /tmp/solr-test`
 
+init a core ...
 
-mvn archetype:generate -DarchetypeArtifactId=maven-archetype-quickstart -DgroupId=com.example -DartifactId=solrTest -Dversion=0.0.1-SNAPSHOT
-cd solrTest
+`> mvn com.baloise.maven:solr-maven-plugin:init`
 
-mvn com.baloise.maven:solr-maven-plugin:run -Dsolr.home=C:/Users/Public/dev/solr-4.7.0/example/solr
+run that ...
+
+`> mvn com.baloise.maven:solr-maven-plugin:run`
+
+go play at http://127.0.0.1:8983/solr/
+
+shut down via 
+
+http://localhost:8983/solr/shutdown
+
+or type *exit* in the console (also works when launched in eclipse via m2 or external task)
+
+## Make your life easier with plugin groups
+
+Add the following to your *~/.m2/settings.xml*
+
+```
+<pluginGroups>
+	<pluginGroup>com.baloise.maven</pluginGroup>
+</pluginGroups>
+```
+
+now you can use
+
+`> mvn solr:run`
+
+[(tell me more)](http://maven.apache.org/guides/introduction/introduction-to-plugin-prefix-mapping.html#Configuring_Maven_to_Search_for_Plugins)
+
+## Configuration options (TBD)
 
 Of course you have all the options as where to set the properties
 
@@ -40,10 +66,6 @@ Of course you have all the options as where to set the properties
   
   @Parameter(property = "solr.war", required = false)
   String war = null;
-  
-  
-  
-Shutting down
-via http://localhost:8983/solr/shutdown
-type exit in the console (also works when launched in eclipse via m2 or external task)
+
+[(tell me more)](http://docs.codehaus.org/display/MAVENUSER/MavenPropertiesGuide)
 
