@@ -37,6 +37,13 @@ Performing a Release Deployment
 Once you have updated all the versions and ensured that your build passes without deployment you can perform the deployment with the usage of the release profile with
 > mvn clean deploy -P release
 
+if this fails (proxy) try 
+> set MAVEN_OPTS=-Dhttps.proxyHost=webproxy -Dhttps.proxyPort=1234 -Dhttps.proxyUser=user -Dhttps.proxyPassword=pass
+or just do the following
+> cd target 
+> jar -cvf bundle.jar solr*
+then follow http://central.sonatype.org/pages/manual-staging-bundle-creation-and-deployment.html
+
 Stage to central
 
 > mvn nexus-staging:release
