@@ -9,7 +9,6 @@ import java.net.UnknownHostException;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
@@ -31,15 +30,6 @@ import org.eclipse.aether.resolution.ArtifactResult;
 @Mojo(name = "run", defaultPhase = LifecyclePhase.NONE, requiresProject=false)
 public class RunMojo extends AbstractMojo {
 
-  static final String SOLR_GROUP_ID = "org.apache.solr";
-  static final String SOLR_ARTIFACT_ID = "solr";
-
-  @Parameter(defaultValue = "${basedir}")
-  private File private__basedir;
-
-  @Parameter(property = "solr.home")
-  private File home;
-  
   @Parameter(defaultValue = "8983", property = "solr.port", required = true)
   int port;
 
@@ -67,10 +57,8 @@ public class RunMojo extends AbstractMojo {
   @Parameter(defaultValue = "${project.remoteProjectRepositories}")
   private List<RemoteRepository> projectRepos;
 
-  public void execute() throws MojoExecutionException, MojoFailureException {
-    adjustHome();
+  protected void doExecute() throws MojoExecutionException, MojoFailureException {
     if (context.charAt(0) != '/') context = "/" + context;
-    getLog().info("solr.home: " + home.getAbsolutePath());
     checkHome();
     getLog().info("solr.port: " + port);
     getLog().info("solr.context: " + context);
@@ -103,12 +91,6 @@ public class RunMojo extends AbstractMojo {
     
   }
 
-  private void adjustHome() {
-    if(home == null) {
-      home = hasPom() ?  new File(private__basedir, "/src/solr/resources") : private__basedir;
-    }
-  }
-
   private String getHostName() {
     try {
       return java.net.InetAddress.getLocalHost().getHostName();
@@ -118,10 +100,6 @@ public class RunMojo extends AbstractMojo {
     }
   }
   
-  private boolean hasPom() {
-    return new File("pom.xml").exists();
-  }
-
   public ArtifactResult resolve(String artifactCoords) throws MojoExecutionException, MojoFailureException {
     Artifact artifact;
     try {
