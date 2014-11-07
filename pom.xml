@@ -16,7 +16,7 @@
 
 	<groupId>com.baloise.maven</groupId>
 	<artifactId>solr-maven-plugin</artifactId>
-	<version>0.1.1-SNAPSHOT</version>
+	<version>0.1.1</version>
 	<packaging>maven-plugin</packaging>
 
 	<name>solr-maven-plugin Maven Plugin</name>
