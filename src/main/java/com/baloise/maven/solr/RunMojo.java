@@ -69,8 +69,7 @@ public class RunMojo extends AbstractMojo {
     adjustHome();
     if (context.charAt(0) != '/') context = "/" + context;
     getLog().info("solr.home: " + home.getAbsolutePath());
-    //TODO solr.home has to contain either solr.xml or collection1 core
-    //TODO otherwise generate solr.xml on classpath or handle error gracefully
+    checkHome();
     getLog().info("solr.port: " + port);
     getLog().info("solr.context: " + context);
     getLog().info("solr.version: " + version);
@@ -83,6 +82,13 @@ public class RunMojo extends AbstractMojo {
     catch (Exception e) {
       getLog().error(e);
     }
+  }
+
+  private void checkHome() {
+    if(!new File(home,"collection1").exists() && !new File(home,"solr.xml").exists()) {
+      getLog().warn("solr.home: no cores found. (collection1 or solr.xml)");
+    }
+    
   }
 
   private void adjustHome() {
