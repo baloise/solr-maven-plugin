@@ -22,7 +22,7 @@ public class JettyRunner {
     webapp.addServlet(ShutDownServlet.class.getName(), "/shutdown");
     jettySolr.getServer().setHandler(webapp);
     jettySolr.start();
-    waitForExit();
+    waitForExit(jettySolr);
   }
 
   private static void addShutdownHook(final JettySolrRunner jettySolr) {
@@ -38,13 +38,13 @@ public class JettyRunner {
     });
   }
 
-  private static void waitForExit() {
+  private static void waitForExit(final JettySolrRunner jettySolr) {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     printMessage();
     while (true) {
       try {
         if("exit".equalsIgnoreCase(br.readLine())) {
-          System.exit(0);
+          return;
         } else {
           printMessage();
         }
