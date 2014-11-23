@@ -39,7 +39,7 @@ public class RunMojo extends AbstractMojo {
   @Parameter(property = "solr.war", required = false)
   String war = null;
   
-  @Parameter(defaultValue = "4.10.1", property = "solr.version", required = false)
+  @Parameter(defaultValue = "4.10.2", property = "solr.version", required = false)
   String version = null;
 
   @Component

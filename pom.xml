@@ -45,7 +45,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<solr.version>4.10.1</solr.version>
+		<solr.version>4.10.2</solr.version>
 		<aether.version>1.0.0.v20140518</aether.version>
 	</properties>
 
