@@ -69,3 +69,7 @@ Of course you have all the options as where to set the properties
 
 [(tell me more)](http://docs.codehaus.org/display/MAVENUSER/MavenPropertiesGuide)
 
+
+## Similar projects
+
+[Boris Naguets solr-maven-plugin](https://github.com/BorisNaguet/solr-maven-plugin)
