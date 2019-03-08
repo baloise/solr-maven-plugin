@@ -5,33 +5,40 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import org.apache.solr.client.solrj.embedded.JettySolrRunner;
-import org.apache.solr.client.solrj.embedded.PermissiveJettySolrRunner;
-import org.eclipse.jetty.webapp.WebAppContext;
+public class SolrRunner {
 
-public class JettyRunner {
-
-  public static void runJetty(File solrHome, String context, int port, String solrWar) throws Exception {
-    PermissiveJettySolrRunner jettySolr = new PermissiveJettySolrRunner(solrHome.getAbsolutePath(), context, port);
-    addShutdownHook(jettySolr);
-
-    WebAppContext webapp = new WebAppContext();
-    webapp.setContextPath(context);
-    webapp.setWar(solrWar);
-    webapp.setExtractWAR(true);
-    webapp.addServlet(ShutDownServlet.class.getName(), "/shutdown");
-    jettySolr.getServer().setHandler(webapp);
-    jettySolr.start();
+  public static void runSolr(File solrInstall, File solrHome, int port) throws Exception {
+	
+	addShutdownHook(solrInstall, solrHome, port);
+	new ProcessBuilder(
+			new File(solrInstall , "/bin/solr").getAbsolutePath()
+			,"-f" // Start Solr in foreground
+			,"-p" // port
+			, String.valueOf(port)
+			,"-s" // Sets the solr.solr.home system property
+			,solrHome.getAbsolutePath()
+			)
+	  .directory(solrInstall)
+	  .inheritIO()
+	  .start();
     waitForExit();
   }
 
-  private static void addShutdownHook(final JettySolrRunner jettySolr) {
+  private static void addShutdownHook(File solrInstall, File solrHome, int port) {
     Runtime.getRuntime().addShutdownHook(new Thread() {
       @Override
       public void run() {
         try {
           System.out.println("Shutting down SOLR");
-          jettySolr.stop();
+          new ProcessBuilder(
+      			new File(solrInstall , "/bin/solr").getAbsolutePath()
+      			,"stop"
+      			,"-p" // port
+      			, String.valueOf(port)
+      			)
+      	  .directory(solrInstall)
+      	  .inheritIO()
+      	  .start();
         }
         catch (Exception e) {}
       }

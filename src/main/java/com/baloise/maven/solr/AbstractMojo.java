@@ -10,6 +10,7 @@ public abstract class AbstractMojo extends org.apache.maven.plugin.AbstractMojo 
 
 	static final String SOLR_GROUP_ID = "org.apache.solr";
 	static final String SOLR_ARTIFACT_ID = "solr";
+	static final String SOLR_DEFAULT_VERSION = "7.7.1";
 
 	@Parameter(defaultValue = "${basedir}")
 	protected File private__basedir;
@@ -17,6 +18,9 @@ public abstract class AbstractMojo extends org.apache.maven.plugin.AbstractMojo 
 	@Parameter(property = "solr.home")
 	protected File home;
 	
+	@Parameter(defaultValue = SOLR_DEFAULT_VERSION, property = "solr.version", required = false)
+	String version = null;
+
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		adjustHome();
 		getLog().info("solr.home: " + home.getAbsolutePath());

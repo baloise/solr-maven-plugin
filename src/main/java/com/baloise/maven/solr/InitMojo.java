@@ -14,7 +14,8 @@ public class InitMojo extends AbstractMojo {
 
 	protected void doExecute() throws MojoExecutionException, MojoFailureException {
 		try {
-			unzip(getClass().getResourceAsStream("init.zip"), home);
+			int majorVersion = version.startsWith("4") ? 4 : 7;
+			unzip(getClass().getResourceAsStream("init"+majorVersion+".zip"), home);
 		} catch (IOException e) {
 			throw new MojoExecutionException("",e);
 		}
