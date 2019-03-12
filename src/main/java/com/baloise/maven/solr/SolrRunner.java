@@ -1,44 +1,48 @@
 package com.baloise.maven.solr;
 
+import static java.util.stream.Collectors.joining;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.stream.Stream;
 
 public class SolrRunner {
 
   public static void runSolr(File solrInstall, File solrHome, int port) throws Exception {
 	
 	addShutdownHook(solrInstall, solrHome, port);
-	new ProcessBuilder(
+	runProc(solrInstall,
 			new File(solrInstall , solrCmd()).getAbsolutePath()
 			,"-f" // Start Solr in foreground
 			,"-p" // port
 			, String.valueOf(port)
 			,"-s" // Sets the solr.solr.home system property
 			,solrHome.getAbsolutePath()
-			)
-	  .directory(solrInstall)
-	  .inheritIO()
-	  .start();
+			);
     waitForExit();
   }
 
+  private static void runProc(File directory, String ... cmd) throws IOException {
+	  System.out.println(String.format("%s> %s", directory, Stream.of(cmd).collect(joining(" "))));
+	  new ProcessBuilder(cmd)
+    	  .directory(directory)
+    	  .inheritIO().start();
+  }
+  
   private static void addShutdownHook(File solrInstall, File solrHome, int port) {
     Runtime.getRuntime().addShutdownHook(new Thread() {
       @Override
       public void run() {
         try {
           System.out.println("Shutting down SOLR");
-          new ProcessBuilder(
-      			new File(solrInstall , solrCmd()).getAbsolutePath()
-      			,"stop"
-      			,"-p" // port
-      			, String.valueOf(port)
-      			)
-      	  .directory(solrInstall)
-      	  .inheritIO()
-      	  .start();
+          runProc(solrInstall,
+        		  new File(solrInstall , solrCmd()).getAbsolutePath()
+        		  ,"stop"
+          		  ,"-p" // port
+          		  , String.valueOf(port)
+      			  );
         }
         catch (Exception e) {}
       }
