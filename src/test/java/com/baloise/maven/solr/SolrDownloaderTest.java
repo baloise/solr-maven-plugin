@@ -10,13 +10,11 @@ import org.junit.Test;
 @Ignore
 public class SolrDownloaderTest {
 	
-	//TODO put this into settings.xml or system property
-	final static String remote = "http://archive.apache.org/dist/";
 	
 	@Test
 	public void test() {
-		SolrDownloader downloader = new SolrDownloader().withRemote(remote);
-		assertEquals(remote, downloader.getRemote());
+		SolrDownloader downloader = new SolrDownloader();
+		
 		assertEquals(new File(System.getProperty("user.home")+"/solr"), downloader.getHome());
 		assertEquals(SOLR_DEFAULT_VERSION, downloader.getLatestVersion());
 		assertEquals(new File(System.getProperty("user.home")+"/solr/solr-"+SOLR_DEFAULT_VERSION), downloader.download());

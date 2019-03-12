@@ -1,5 +1,7 @@
 package com.baloise.maven.solr;
 
+import static java.lang.String.format;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -7,9 +9,11 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import org.codehaus.plexus.archiver.tar.TarGZipUnArchiver;
 import org.codehaus.plexus.logging.Logger;
@@ -18,15 +22,16 @@ import org.codehaus.plexus.util.IOUtil;
 
 public class SolrDownloader {
 
+	private static final String SOLR_DOWNLOAD_URL_PROPERTY = "solrDownloadURL";
 	private File home = new File(System.getProperty("user.home") + "/solr");
-	private String remote = "http://archive.apache.org/dist/";
+	private String lazyRemote;
 	private List<String> versions = new ArrayList<>();
 	String context = "lucene/solr/";
 
 	public List<String> getVersions() {
 		if (versions.isEmpty()) {
 			try {
-				try (Scanner s = new Scanner(new URL(remote + context).openStream())) {
+				try (Scanner s = new Scanner(new URL(getRemote() + context).openStream())) {
 					String html = s.useDelimiter("\\Z").next();
 					Matcher m = Pattern.compile("<img src=\"/icons/folder.gif\"[^<]*?<a href=\"(\\d\\..+?)/\"")
 							.matcher(html);
@@ -35,11 +40,16 @@ public class SolrDownloader {
 					}
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
-				throw new IllegalStateException(e);
+				handle(e);
 			}
 		}
 		return versions;
+	}
+
+	private void handle(Exception e) {
+		System.err.println(format("maybe you should set %s as system property or environment variable", SOLR_DOWNLOAD_URL_PROPERTY));
+		e.printStackTrace();
+		throw new IllegalStateException(e);
 	}
 
 	public String getLatestVersion() {
@@ -59,7 +69,7 @@ public class SolrDownloader {
 		System.out.println("loading " + ret.getName());
 		if (!ret.exists()) {
 			try {
-				URL url = new URL(String.format("%s%s%s/solr-%s.tgz", remote, context, version, version));
+				URL url = new URL(String.format("%s%s%s/solr-%s.tgz", getRemote(), context, version, version));
 				File tmpFile = File.createTempFile("solr-" + version, ".tgz");
 				System.out.println(String.format("downloading %s to %s", url, tmpFile));
 				try (InputStream in = url.openStream()) {
@@ -75,7 +85,7 @@ public class SolrDownloader {
 				ua.extract();
 				tmpFile.delete();
 			} catch (Exception e) {
-				throw new IllegalStateException(e);
+				handle(e);
 			}
 		} else {
 			System.out.println("already got " + ret);
@@ -85,12 +95,18 @@ public class SolrDownloader {
 	}
 
 	public SolrDownloader withRemote(String remote) {
-		this.remote = remote;
+		this.lazyRemote = remote;
 		return this;
 	}
 
 	public String getRemote() {
-		return remote;
+		return Stream.of(
+				System.getProperty(SOLR_DOWNLOAD_URL_PROPERTY), 
+				System.getenv(SOLR_DOWNLOAD_URL_PROPERTY)
+				)
+		.filter(Objects::nonNull)
+        .findFirst()
+        .orElse("http://archive.apache.org/dist/");
 	}
 
 }

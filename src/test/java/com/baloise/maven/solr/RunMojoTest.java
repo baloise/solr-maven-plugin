@@ -27,7 +27,7 @@ public class RunMojoTest {
 			initMojo.version = SOLR_DEFAULT_VERSION;
 			initMojo.doExecute();
 		}
-		mojo.downloader = new SolrDownloader().withRemote(SolrDownloaderTest.remote);
+		mojo.downloader = new SolrDownloader();
 	}
 
 	@Test
