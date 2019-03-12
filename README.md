@@ -61,12 +61,6 @@ Of course you have all the options as where to set the properties
   @Parameter(defaultValue = "8983", property = "solr.port", required = true)
   int port;
 
-  @Parameter(defaultValue = "/solr", property = "solr.context", required = true)
-  String context;
-  
-  @Parameter(property = "solr.war", required = false)
-  String war = null;
-
 [(tell me more)](http://docs.codehaus.org/display/MAVENUSER/MavenPropertiesGuide)
 
 
