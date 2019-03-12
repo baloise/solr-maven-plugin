@@ -11,7 +11,7 @@ public class SolrRunner {
 	
 	addShutdownHook(solrInstall, solrHome, port);
 	new ProcessBuilder(
-			new File(solrInstall , "/bin/solr").getAbsolutePath()
+			new File(solrInstall , solrCmd()).getAbsolutePath()
 			,"-f" // Start Solr in foreground
 			,"-p" // port
 			, String.valueOf(port)
@@ -31,7 +31,7 @@ public class SolrRunner {
         try {
           System.out.println("Shutting down SOLR");
           new ProcessBuilder(
-      			new File(solrInstall , "/bin/solr").getAbsolutePath()
+      			new File(solrInstall , solrCmd()).getAbsolutePath()
       			,"stop"
       			,"-p" // port
       			, String.valueOf(port)
@@ -45,7 +45,16 @@ public class SolrRunner {
     });
   }
 
-  private static void waitForExit() {
+ protected static String solrCmd() {
+	switch (OperatingSystem.CURRENT) {
+	case WINDOWS:
+		return "/bin/solr.cmd";
+	default:
+		return "/bin/solr";
+	}
+}
+
+private static void waitForExit() {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     printMessage();
     while (true) {
