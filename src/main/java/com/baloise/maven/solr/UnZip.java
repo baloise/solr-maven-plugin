@@ -10,6 +10,7 @@ import java.util.zip.ZipInputStream;
 public class UnZip {
 
 	public static void unzip(InputStream in, File dest) throws IOException {
+		if(in == null) throw new IOException("input must not be null");
 		try {
 			ZipInputStream zin = new ZipInputStream(in);
 			ZipEntry ze = null;
