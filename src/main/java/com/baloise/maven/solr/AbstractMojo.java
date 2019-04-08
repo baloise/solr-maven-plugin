@@ -24,6 +24,7 @@ public abstract class AbstractMojo extends org.apache.maven.plugin.AbstractMojo 
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		adjustHome();
 		getLog().info("solr.home: " + home.getAbsolutePath());
+		getLog().info("solr.version: " + version);
 		doExecute();
 	}
 
