@@ -13,11 +13,11 @@ import org.apache.maven.plugins.annotations.Mojo;
 public class InitMojo extends AbstractMojo {
 
 	protected void doExecute() throws MojoExecutionException, MojoFailureException {
+		String zip = "init"+version.trim().split("\\.")[0]+".zip" ;
 		try {
-			int majorVersion = version.startsWith("4") ? 4 : 7;
-			unzip(getClass().getResourceAsStream("init"+majorVersion+".zip"), home);
+			unzip(getClass().getResourceAsStream(zip), home);
 		} catch (IOException e) {
-			throw new MojoExecutionException("",e);
+			throw new MojoExecutionException("could not load "+ zip,e);
 		}
 	}
 
