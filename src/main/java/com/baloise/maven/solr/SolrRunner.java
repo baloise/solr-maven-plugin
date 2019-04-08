@@ -78,7 +78,7 @@ private static void waitForExit() {
   private static void printMessage() {
     System.out.flush();
     System.err.flush();
-    System.out.println("To quit type 'exit'");
+    System.out.println("To exit type 'exit'");
   }
 
 }
