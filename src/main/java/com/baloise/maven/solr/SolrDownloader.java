@@ -24,7 +24,6 @@ public class SolrDownloader {
 
 	private static final String SOLR_DOWNLOAD_URL_PROPERTY = "solrDownloadURL";
 	private File home = new File(System.getProperty("user.home") + "/solr");
-	private String lazyRemote;
 	private List<String> versions = new ArrayList<>();
 	String context = "lucene/solr/";
 
@@ -92,11 +91,6 @@ public class SolrDownloader {
 		}
 		return ret;
 
-	}
-
-	public SolrDownloader withRemote(String remote) {
-		this.lazyRemote = remote;
-		return this;
 	}
 
 	public String getRemote() {
