@@ -13,10 +13,12 @@ import org.apache.maven.plugins.annotations.Mojo;
 public class InitMojo extends AbstractMojo {
 
 	protected void doExecute() throws MojoExecutionException, MojoFailureException {
-		String zip = "init"+version.trim().split("\\.")[0]+".zip" ;
+		String majorVersion = version.trim().split("\\.")[0];
+		String zip = "init"+majorVersion+".zip" ;
 		try {
 			unzip(getClass().getResourceAsStream(zip), home);
 		} catch (IOException e) {
+			getLog().error("Please provide an initial core for the major version "+majorVersion+".\nSee https://github.com/baloise/solr-maven-plugin/blob/master/create_init_zip.md");
 			throw new MojoExecutionException("could not load "+ zip,e);
 		}
 	}
