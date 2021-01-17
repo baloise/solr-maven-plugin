@@ -26,11 +26,11 @@ run that ...
 
 `> mvn com.baloise.maven:solr-maven-plugin:run`
 
-go play at http://127.0.0.1:8983/solr/
+go play at [http://localhost:8983/solr/](http://localhost:8983/solr/)
 
 shut down via 
 
-http://localhost:8983/solr/shutdown
+[http://localhost:8983/solr/shutdown](http://localhost:8983/solr/shutdown)
 
 or type *exit* in the console (also works when launched in eclipse via m2 or external task)
 
