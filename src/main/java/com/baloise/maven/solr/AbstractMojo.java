@@ -10,7 +10,7 @@ public abstract class AbstractMojo extends org.apache.maven.plugin.AbstractMojo 
 
 	static final String SOLR_GROUP_ID = "org.apache.solr";
 	static final String SOLR_ARTIFACT_ID = "solr";
-	static final String SOLR_DEFAULT_VERSION = "7.7.1";
+	static final String SOLR_DEFAULT_VERSION = "8.7.0";
 
 	@Parameter(defaultValue = "${basedir}")
 	protected File private__basedir;
