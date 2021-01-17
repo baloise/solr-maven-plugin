@@ -18,7 +18,6 @@ public class RunMojoTest {
 		mojo.port = 8983;
 		mojo.context = "/solr";
 		mojo.version = SOLR_DEFAULT_VERSION;
-		mojo.version = "6.5.1";
 		mojo.home = new File("tmp");
 		mojo.home.mkdirs();
 		mojo.downloader = new SolrDownloader();
