@@ -17,7 +17,6 @@ insert '''
         "features":["keep your POM clean: no dependencies",
           "keep your workspace clean : flexibilty in layout with good defaults"],
         "price":0.0,
-        "price_c":"0,USD",
         "popularity":10,
         "inStock":true
  }
@@ -27,5 +26,5 @@ insert '''
 bin\solr stop -p 8983
 
 in  <unzipped>\example\techproducts\solr\techproducts\core.properties set name=com.baloise.example
-rename/move  <unzipped>\example\techproducts\solr\techproducts\ to com.baloise.examle
+rename/move  <unzipped>\example\techproducts\solr\techproducts\ to com\baloise\examle
 zip com folder into init<majorversion>.zip
