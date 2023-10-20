@@ -34,6 +34,10 @@ shut down via
 
 or type *exit* in the console (also works when launched in eclipse via m2 or external task)
 
+to see the avaiable SOLR versions use
+
+`> mvn com.baloise.maven:solr-maven-plugin::versions`
+
 ## Make your life easier with plugin groups
 
 Add the following to your *~/.m2/settings.xml*
